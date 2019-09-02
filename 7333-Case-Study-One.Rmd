@@ -80,3 +80,13 @@ offline = offline[ , !(names(offline) %in% c("scanMac", "posZ"))]
 offline$angle = roundOrientation(offline$orientation)
 with(offline, boxplot(orientation ~ angle, xlab="nearest 45 degree angle", ylab="orientation"))
 ```
+
+## Handle MAC Addresses
+```{r handleMAC}
+table(offline$mac)
+subMacs = names(sort(table(offline$mac), decreasing = TRUE))[1:7]
+offline = offline[ offline$mac %in% subMacs, ]
+macChannel = with(offline, table(mac, channel))
+apply(macChannel, 1, function(x) sum(x > 0))
+offline = offline[ , "channel" != names(offline)]
+```
