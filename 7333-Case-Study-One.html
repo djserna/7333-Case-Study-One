@@ -155,6 +155,55 @@ offline = as.data.frame(do.call(&quot;rbind&quot;, tmp),
 dim(offline)</code></pre>
 <pre><code>## [1] 1181628      10</code></pre>
 </div>
+<div id="data-cleansingpreparation" class="section level2">
+<h2>Data Cleansing/Preparation</h2>
+<pre class="r"><code>names(offline) = c(&quot;time&quot;, &quot;scanMac&quot;, &quot;posX&quot;, &quot;posY&quot;, &quot;posZ&quot;, 
+                   &quot;orientation&quot;, &quot;mac&quot;, &quot;signal&quot;, 
+                   &quot;channel&quot;, &quot;type&quot;)
+
+numVars = c(&quot;time&quot;, &quot;posX&quot;, &quot;posY&quot;, &quot;posZ&quot;, 
+            &quot;orientation&quot;, &quot;signal&quot;)
+offline[ numVars ] =  lapply(offline[ numVars ], as.numeric)
+
+offline = offline[ offline$type == &quot;3&quot;, ]
+offline = offline[ , &quot;type&quot; != names(offline) ]
+dim(offline)</code></pre>
+<pre><code>## [1] 978443      9</code></pre>
+<pre class="r"><code>offline$rawTime = offline$time
+offline$time = offline$time/1000
+class(offline$time) = c(&quot;POSIXt&quot;, &quot;POSIXct&quot;)
+unlist(lapply(offline, class))</code></pre>
+<pre><code>##       time1       time2     scanMac        posX        posY        posZ 
+##    &quot;POSIXt&quot;   &quot;POSIXct&quot; &quot;character&quot;   &quot;numeric&quot;   &quot;numeric&quot;   &quot;numeric&quot; 
+## orientation         mac      signal     channel     rawTime 
+##   &quot;numeric&quot; &quot;character&quot;   &quot;numeric&quot; &quot;character&quot;   &quot;numeric&quot;</code></pre>
+<pre class="r"><code>summary(offline[, numVars])</code></pre>
+<pre><code>##       time                          posX            posY       
+##  Min.   :2006-02-11 01:31:58   Min.   : 0.00   Min.   : 0.000  
+##  1st Qu.:2006-02-11 07:21:27   1st Qu.: 2.00   1st Qu.: 3.000  
+##  Median :2006-02-11 13:57:58   Median :12.00   Median : 6.000  
+##  Mean   :2006-02-16 08:57:37   Mean   :13.52   Mean   : 5.897  
+##  3rd Qu.:2006-02-19 08:52:40   3rd Qu.:23.00   3rd Qu.: 8.000  
+##  Max.   :2006-03-09 14:41:10   Max.   :33.00   Max.   :13.000  
+##       posZ    orientation        signal     
+##  Min.   :0   Min.   :  0.0   Min.   :-99.0  
+##  1st Qu.:0   1st Qu.: 90.0   1st Qu.:-69.0  
+##  Median :0   Median :180.0   Median :-60.0  
+##  Mean   :0   Mean   :167.2   Mean   :-61.7  
+##  3rd Qu.:0   3rd Qu.:270.0   3rd Qu.:-53.0  
+##  Max.   :0   Max.   :359.9   Max.   :-25.0</code></pre>
+<pre class="r"><code>summary(sapply(offline[ , c(&quot;mac&quot;, &quot;channel&quot;, &quot;scanMac&quot;)],
+                as.factor))</code></pre>
+<pre><code>##                 mac               channel                    scanMac      
+##  00:0f:a3:39:e1:c0:145862   2462000000:189774   00:02:2D:21:0F:33:978443  
+##  00:0f:a3:39:dd:cd:145619   2437000000:152124                             
+##  00:14:bf:b1:97:8a:132962   2412000000:145619                             
+##  00:14:bf:3b:c7:c6:126529   2432000000:126529                             
+##  00:14:bf:b1:97:90:122315   2427000000:122315                             
+##  00:14:bf:b1:97:8d:121325   2442000000:121325                             
+##  (Other)          :183831   (Other)   :120757</code></pre>
+<pre class="r"><code>offline = offline[ , !(names(offline) %in% c(&quot;scanMac&quot;, &quot;posZ&quot;))]</code></pre>
+</div>
 
 
 
