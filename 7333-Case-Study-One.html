@@ -135,9 +135,15 @@ $(document).ready(function () {
   if (length(tokens) == 10) 
     return(NULL)
  
-  tmp = matrix(tokens[ - (1:10) ], , 4, byrow = TRUE)
+  tmp = matrix(tokens[ - (1:10) ], ncol = 4, byrow = TRUE)
   cbind(matrix(tokens[c(2, 4, 6:8, 10)], nrow(tmp), 6, 
                byrow = TRUE), tmp)
+}
+
+roundOrientation = function(angles) {
+  refs = seq(0, by = 45, length  = 9)
+  q = sapply(angles, function(o) which.min(abs(o - refs)))
+  c(refs[1:8], 0)[q]
 }</code></pre>
 </div>
 <div id="parse-the-raw-input-data" class="section level2">
@@ -203,6 +209,9 @@ unlist(lapply(offline, class))</code></pre>
 ##  00:14:bf:b1:97:8d:121325   2442000000:121325                             
 ##  (Other)          :183831   (Other)   :120757</code></pre>
 <pre class="r"><code>offline = offline[ , !(names(offline) %in% c(&quot;scanMac&quot;, &quot;posZ&quot;))]</code></pre>
+</div>
+<div id="handle-orientation" class="section level2">
+<h2>Handle orientation</h2>
 </div>
 
 
