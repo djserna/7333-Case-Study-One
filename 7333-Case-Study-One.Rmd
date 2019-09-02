@@ -16,6 +16,6 @@ Placeholder introduction text
 
 ```
 
-```{r cars}
-summary(cars)
+```{r parseOfflineFile}
+
 ```
