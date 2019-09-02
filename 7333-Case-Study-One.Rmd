@@ -16,6 +16,31 @@ Placeholder introduction text
 
 ```
 
-```{r parseOfflineFile}
+```{r functions}
+processLine = function(x)
+{
+  tokens = strsplit(x, "[;=,]")[[1]]
+  
+  if (length(tokens) == 10) 
+    return(NULL)
+ 
+  tmp = matrix(tokens[ - (1:10) ], , 4, byrow = TRUE)
+  cbind(matrix(tokens[c(2, 4, 6:8, 10)], nrow(tmp), 6, 
+               byrow = TRUE), tmp)
+}
+```
 
+## Parse the raw input data
+```{r parseOfflineFile}
+txt = readLines("Data/offline.final.trace.txt")
+tokens = strsplit(txt[4], "[;=,]")[[1]]
+tmp = matrix(tokens[ - (1:10) ], ncol = 4, byrow = TRUE)
+mat = cbind(matrix(tokens[c(2, 4, 6:8, 10)], nrow = nrow(tmp),
+                   ncol = 6, byrow = TRUE), 
+            tmp)
+lines = txt[ substr(txt, 1, 1) != "#" ]
+tmp = lapply(lines, processLine)
+offline = as.data.frame(do.call("rbind", tmp), 
+                        stringsAsFactors = FALSE)
+dim(offline)
 ```
